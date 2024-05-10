@@ -6,7 +6,7 @@
 /*   By: ccormon <ccormon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:59:27 by ccormon           #+#    #+#             */
-/*   Updated: 2024/05/09 16:10:19 by ccormon          ###   ########.fr       */
+/*   Updated: 2024/05/10 16:40:20 by ccormon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,28 @@
 
 typedef struct s_args
 {
-	int		nb_philo;
-	long	time_to_die;
-	long	time_to_eat;
-	long	time_to_sleep;
-	long	nb_meals_max;
+	int	nb_philo;
+	int	time_to_die;
+	int	time_to_eat;
+	int	time_to_sleep;
+	int	nb_meals_max;
 }	t_args;
+
+typedef struct s_fork
+{
+	bool			is_available;
+	pthread_mutex_t	*mutex;
+}	t_fork;
+
+typedef struct s_philo
+{
+	pthread_t	thread_id;
+	int			nb_meals;
+	bool		is_eating;
+	bool		is_sleeping;
+	bool		is_thinking;
+	t_fork		fork_left;
+	t_fork		*fork_right;
+}	t_philo
 
 #endif
