@@ -6,41 +6,55 @@
 /*   By: ccormon <ccormon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:58:32 by ccormon           #+#    #+#             */
-/*   Updated: 2024/05/10 16:35:11 by ccormon          ###   ########.fr       */
+/*   Updated: 2024/05/11 17:31:24 by ccormon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-/*
-Initialize the struct args.
-Return false if one of the arguments isn't a number or if nb_philo or
- nb_meals_max are equals to 0.*/
+int	ft_atoi_mod(char *s)
+{
+	unsigned long	n;
+	int				i;
+
+	if (!s || !(*s))
+		return (-1);
+	n = 0;
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] < '0' || s[i] > '9')
+			return (-1);
+		n = n * 10 + s[i++] - '0';
+		if (n > INT_MAX)
+			return (-1);
+	}
+	return (n);
+}
+
 bool	init_args(t_args *args, char **argv)
 {
-	int	i;
-
-	i = 0;
-	while (argv[i])
-		if (!ft_isnumber(argv[i++]))
-			return (false);
-	args->nb_philo = ft_atoi(argv[0]);
-	args->time_to_die = ft_atoi(argv[1]);
-	args->time_to_eat = ft_atoi(argv[2]);
-	args->time_to_sleep = ft_atoi(argv[3]);
+	args->nb_philo = ft_atoi_mod(argv[0]);
+	if (args->nb_philo <= 0)
+		return (false);
+	args->time_to_die = ft_atoi_mod(argv[1]);
+	if (args->time_to_die < 0)
+		return (false);
+	args->time_to_eat = ft_atoi_mod(argv[2]);
+	if (args->time_to_eat < 0)
+		return (false);
+	args->time_to_sleep = ft_atoi_mod(argv[3]);
 	if (argv[4])
-		args->nb_meals_max = ft_atoi(argv[4]);
+	{
+		args->nb_meals_max = ft_atoi_mod(argv[4]);
+		if (args->nb_meals_max <= 0)
+			return (false);
+	}
 	else
 		args->nb_meals_max = -1;
-	if (args->nb_philo == 0 || args->nb_meals_max == 0)
-		return (false);
 	return (true);
 }
 
-/*
-Initialize the struct philo. It needs to be free after.
-Return NULL if malloc fails and the struct philo initialized if everyting is
- OK.*/
 t_philo	*init_philo(t_args args)
 {
 	t_philo	*philo;
@@ -56,6 +70,7 @@ t_philo	*init_philo(t_args args)
 		philo[i].is_eating = false;
 		philo[i].is_sleeping = false;
 		philo[i].is_thinking = true;
+		philo[i].time_start_eating = 0;
 		philo[i].fork_left.is_available = true;
 		pthread_mutex_init(philo[i++].fork_left.mutex, NULL);
 	}
@@ -90,5 +105,6 @@ int	main(int argc, char **argv)
 		ft_putstr_fd("Error\n", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
+	free(philo);
 	return (EXIT_SUCCESS);
 }
