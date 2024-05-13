@@ -6,7 +6,7 @@
 /*   By: ccormon <ccormon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:59:27 by ccormon           #+#    #+#             */
-/*   Updated: 2024/05/11 17:36:42 by ccormon          ###   ########.fr       */
+/*   Updated: 2024/05/13 13:48:58 by ccormon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,13 @@ typedef struct s_fork
 
 typedef struct s_philo
 {
-	pthread_t	thread_id;
+	t_args		args;
+	pthread_t	*thread_id;
 	int			nb_meals;
 	bool		is_eating;
 	bool		is_sleeping;
 	bool		is_thinking;
-	int			time_start_eating;
+	time_t		time_start_eating;
 	t_fork		fork_left;
 	t_fork		*fork_right;
 }	t_philo;
@@ -82,5 +83,23 @@ bool	init_args(t_args *args, char **argv);
 /// @return  Return NULL if malloc fails. Return the structure philo
 /// initialized if everyting is OK.
 t_philo	*init_philo(t_args args);
+
+/// @brief Give the time passed since 01/01/1970 midnight in milliseconds.
+/// @return Return a time_t number.
+time_t	get_time(void);
+
+/// @brief Determine if the philosopher is dead or not.
+/// @param philo
+/// @return Return true if the philosopher is dead and false if is not.
+bool	philo_is_dead(t_philo *philo);
+
+/// @brief Define the routine fowllowed by each philosophers.
+/// @param arg
+/// @return Always return NULL.
+void	*start_routine(void *arg);
+
+/// @brief Create thread for each philosophers and start the simulation.
+/// @param philo
+void	start_simulation(t_philo *philo);
 
 #endif

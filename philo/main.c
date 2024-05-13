@@ -6,7 +6,7 @@
 /*   By: ccormon <ccormon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:58:32 by ccormon           #+#    #+#             */
-/*   Updated: 2024/05/11 17:31:24 by ccormon          ###   ########.fr       */
+/*   Updated: 2024/05/13 13:46:30 by ccormon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ t_philo	*init_philo(t_args args)
 	i = 0;
 	while (i < args.nb_philo)
 	{
+		philo[i].args = args;
 		philo[i].nb_meals = 0;
 		philo[i].is_eating = false;
 		philo[i].is_sleeping = false;
@@ -82,6 +83,45 @@ t_philo	*init_philo(t_args args)
 		i++;
 	}
 	return (philo);
+}
+
+time_t	get_time(void)
+{
+	struct timeval	*t;
+
+	gettimeofday(t, NULL);
+	return (t->tv_sec * 1000 + t->tv_usec / 1000);
+}
+
+bool	philo_is_dead(t_philo *philo)
+{
+	if (get_time() - philo->time_start_eating > philo->args.time_to_die)
+		return (true);
+	return (false);
+}
+
+void	*start_routine(void *arg)
+{
+	t_philo	*philo;
+
+	philo = arg;
+	philo->time_start_eating = get_time();
+	while (!philo_is_dead(philo))
+	{
+
+	}
+	return (NULL);
+}
+
+void	start_simulation(t_philo *philo)
+{
+	int	i;
+
+	i = 0;
+	while (i < philo->args.nb_philo)
+	{
+		pthread_create(philo->thread_id, NULL, start_routine, philo);
+	}
 }
 
 int	main(int argc, char **argv)
@@ -105,6 +145,7 @@ int	main(int argc, char **argv)
 		ft_putstr_fd("Error\n", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
+	start_simulation(&philo);
 	free(philo);
 	return (EXIT_SUCCESS);
 }
