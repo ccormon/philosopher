@@ -6,7 +6,7 @@
 /*   By: ccormon <ccormon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:59:27 by ccormon           #+#    #+#             */
-/*   Updated: 2024/05/13 13:48:58 by ccormon          ###   ########.fr       */
+/*   Updated: 2024/05/13 15:48:33 by ccormon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,6 @@ typedef struct s_philo
 	t_args		args;
 	pthread_t	*thread_id;
 	int			nb_meals;
-	bool		is_eating;
-	bool		is_sleeping;
-	bool		is_thinking;
 	time_t		time_start_eating;
 	t_fork		fork_left;
 	t_fork		*fork_right;
@@ -78,11 +75,12 @@ int		ft_atoi_mod(char *s);
 /// or nb_meals_max are equals to 0. Return true if everything is OK.
 bool	init_args(t_args *args, char **argv);
 
-/// @brief Initialize the structure philo. It needs to be free after using it.
+/// @brief Initialize the structure philo for each philosophers and make a tab
+/// with all of the structures. It needs to be free after using it.
 /// @param args
-/// @return  Return NULL if malloc fails. Return the structure philo
+/// @return  Return NULL if malloc fails. Return the tab philo_tab
 /// initialized if everyting is OK.
-t_philo	*init_philo(t_args args);
+t_philo	*init_philo_tab(t_args args);
 
 /// @brief Give the time passed since 01/01/1970 midnight in milliseconds.
 /// @return Return a time_t number.
@@ -100,6 +98,6 @@ void	*start_routine(void *arg);
 
 /// @brief Create thread for each philosophers and start the simulation.
 /// @param philo
-void	start_simulation(t_philo *philo);
+void	start_simulation(t_philo **philo_tab);
 
 #endif

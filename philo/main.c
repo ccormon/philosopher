@@ -6,7 +6,7 @@
 /*   By: ccormon <ccormon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:58:32 by ccormon           #+#    #+#             */
-/*   Updated: 2024/05/13 13:46:30 by ccormon          ###   ########.fr       */
+/*   Updated: 2024/05/13 15:47:08 by ccormon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,34 +55,31 @@ bool	init_args(t_args *args, char **argv)
 	return (true);
 }
 
-t_philo	*init_philo(t_args args)
+t_philo	*init_philo_tab(t_args args)
 {
-	t_philo	*philo;
+	t_philo	*philo_tab;
 	int		i;
 
-	philo = malloc(args.nb_philo * sizeof(t_philo));
-	if (!philo)
+	philo_tab = malloc(args.nb_philo * sizeof(t_philo));
+	if (!philo_tab)
 		return (NULL);
 	i = 0;
 	while (i < args.nb_philo)
 	{
-		philo[i].args = args;
-		philo[i].nb_meals = 0;
-		philo[i].is_eating = false;
-		philo[i].is_sleeping = false;
-		philo[i].is_thinking = true;
-		philo[i].time_start_eating = 0;
-		philo[i].fork_left.is_available = true;
-		pthread_mutex_init(philo[i++].fork_left.mutex, NULL);
+		philo_tab[i].args = args;
+		philo_tab[i].nb_meals = 0;
+		philo_tab[i].time_start_eating = 0;
+		philo_tab[i].fork_left.is_available = true;
+		pthread_mutex_init(philo_tab[i++].fork_left.mutex, NULL);
 	}
-	philo[0].fork_right = &philo[args.nb_philo - 1].fork_left;
+	philo_tab[0].fork_right = &philo_tab[args.nb_philo - 1].fork_left;
 	i = 1;
 	while (i < args.nb_philo)
 	{
-		philo[i].fork_right = &philo[i - 1].fork_left;
+		philo_tab[i].fork_right = &philo_tab[i - 1].fork_left;
 		i++;
 	}
-	return (philo);
+	return (philo_tab);
 }
 
 time_t	get_time(void)
@@ -100,6 +97,11 @@ bool	philo_is_dead(t_philo *philo)
 	return (false);
 }
 
+void	ft_eat(t_philo *philo)
+{
+
+}
+
 void	*start_routine(void *arg)
 {
 	t_philo	*philo;
@@ -108,26 +110,37 @@ void	*start_routine(void *arg)
 	philo->time_start_eating = get_time();
 	while (!philo_is_dead(philo))
 	{
-
+		if (!philo_is_dead(philo))
+		{
+			ft_eat(philo);
+		}
+		if (!philo_is_dead(philo))
+		{
+			ft_sleep(philo);
+		}
+		if (!philo_is_dead(philo))
+		{
+			ft_think(philo);
+		}
 	}
 	return (NULL);
 }
 
-void	start_simulation(t_philo *philo)
+void	start_simulation(t_philo **philo_tab)
 {
 	int	i;
 
 	i = 0;
-	while (i < philo->args.nb_philo)
+	while (i < philo_tab[i]->args.nb_philo)
 	{
-		pthread_create(philo->thread_id, NULL, start_routine, philo);
+		pthread_create(philo_tab[i]->thread_id, NULL, start_routine, philo_tab[i]);
 	}
 }
 
 int	main(int argc, char **argv)
 {
 	t_args	args;
-	t_philo	*philo;
+	t_philo	*philo_tab;
 
 	if (argc != 5 && argc != 6)
 	{
@@ -139,13 +152,13 @@ int	main(int argc, char **argv)
 		ft_putstr_fd("Error\n", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
-	philo = init_philo(args);
-	if (!philo)
+	philo_tab = init_philo_tab(args);
+	if (!philo_tab)
 	{
 		ft_putstr_fd("Error\n", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
-	start_simulation(&philo);
-	free(philo);
+	start_simulation(&philo_tab);
+	free(philo_tab);
 	return (EXIT_SUCCESS);
 }
