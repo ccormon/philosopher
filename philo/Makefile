@@ -6,7 +6,7 @@
 #    By: ccormon <ccormon@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/09 14:31:43 by ccormon           #+#    #+#              #
-#    Updated: 2024/05/09 14:47:21 by ccormon          ###   ########.fr        #
+#    Updated: 2024/05/14 15:22:40 by ccormon          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,10 +16,6 @@ CC 			= cc
 RM			= rm -f
 
 CFLAGS 		= -Wall -Wextra -Werror -fsanitize=thread -g
-CLINKS		= -lreadline
-
-LIBFTDIR	= libft
-LIBFT		= $(LIBFTDIR)/libft.a
 
 SRC		=	main.c\
 
@@ -29,11 +25,8 @@ all: $(NAME)
 
 bonus: $(NAME)
 
-$(NAME): $(LIBFT) $(OBJ)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(CLINKS)
-
-$(LIBFT):
-	$(MAKE) -C $(FT)
+$(NAME): $(OBJ)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@

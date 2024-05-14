@@ -6,7 +6,7 @@
 /*   By: ccormon <ccormon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:59:27 by ccormon           #+#    #+#             */
-/*   Updated: 2024/05/13 15:48:33 by ccormon          ###   ########.fr       */
+/*   Updated: 2024/05/14 16:29:26 by ccormon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,37 +22,41 @@
 # include <sys/time.h>
 # include <pthread.h>
 # include <stdbool.h>
-# include "libft/libft.h"
+# include <limits.h>
 
 /* ******************************* DEFINES ********************************** */
 
-# define NO_COLOR "\e[0m"
+# define RESET_COLOR "\e[0m"
 # define RED "\e[31m"
 # define GREEN "\e[32m"
 # define YELLOW "\e[33m"
 # define BLUE "\e[34m"
+# define MAGENTA "\e[35m"
 
 /* ****************************** STRUCTURES ******************************** */
 
 typedef struct s_args
 {
-	int	nb_philo;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	nb_meals_max;
+	int		nb_philo;
+	int		time_to_die;
+	int		time_to_eat;
+	int		time_to_sleep;
+	int		nb_meals_max;
+	time_t	time_start_simulation;
 }	t_args;
 
 typedef struct s_fork
 {
 	bool			is_available;
-	pthread_mutex_t	*mutex;
+	pthread_mutex_t	mutex;
 }	t_fork;
+
 
 typedef struct s_philo
 {
+	int			philo_id;
 	t_args		args;
-	pthread_t	*thread_id;
+	pthread_t	thread_id;
 	int			nb_meals;
 	time_t		time_start_eating;
 	t_fork		fork_left;
