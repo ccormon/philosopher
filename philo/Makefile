@@ -6,20 +6,24 @@
 #    By: ccormon <ccormon@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/09 14:31:43 by ccormon           #+#    #+#              #
-#    Updated: 2024/05/14 15:22:40 by ccormon          ###   ########.fr        #
+#    Updated: 2024/05/15 16:21:14 by ccormon          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME 		= philosophers
+NAME	=	philosophers
 
-CC 			= cc
-RM			= rm -f
+CC		=	cc
+RM		=	rm -f
 
-CFLAGS 		= -Wall -Wextra -Werror -fsanitize=thread -g
+CFLAGS	=	-Wall -Wextra -Werror -fsanitize=thread -g
 
 SRC		=	main.c\
+			utils.c\
+			init.c\
+			routine.c\
+			routine_utils.c\
 
-OBJ 		= $(SRC:.c=.o)
+OBJ 	=	$(SRC:.c=.o)
 
 all: $(NAME)
 
@@ -39,4 +43,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY:		all bonus clear clean fclean re
+.PHONY: all bonus clear clean fclean re

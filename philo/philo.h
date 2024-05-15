@@ -6,7 +6,7 @@
 /*   By: ccormon <ccormon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:59:27 by ccormon           #+#    #+#             */
-/*   Updated: 2024/05/14 16:29:26 by ccormon          ###   ########.fr       */
+/*   Updated: 2024/05/15 17:12:13 by ccormon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,20 +37,21 @@
 
 typedef struct s_args
 {
-	int		nb_philo;
-	int		time_to_die;
-	int		time_to_eat;
-	int		time_to_sleep;
-	int		nb_meals_max;
-	time_t	time_start_simulation;
+	int				nb_philo;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				nb_meals_max;
+	time_t			time_start;
+	pthread_mutex_t	mutex_is_dead;
 }	t_args;
 
 typedef struct s_fork
 {
 	bool			is_available;
-	pthread_mutex_t	mutex;
+	pthread_mutex_t	mutex_is_available;
+	pthread_mutex_t	mutex_fork;
 }	t_fork;
-
 
 typedef struct s_philo
 {
@@ -65,12 +66,28 @@ typedef struct s_philo
 
 /* ****************************** FONCTIONS ********************************* */
 
+/* main.c */
+
+/// @brief Create thread for each philosophers and start the simulation.
+/// @param philo
+void	start_simulation(t_philo *philo_tab, t_args args);
+
+/* utils.c */
+
 /// @brief It's like the libft's function ft_atoi but it can return only a
 /// positive int and the string must be write in a restrictive format.
 /// @param s
 /// @return Return -1 if the string isn't OK or if the number isn't a positive
 /// int. Return the number if everything is OK.
 int		ft_atoi_mod(char *s);
+
+/// @brief Give the time passed since 01/01/1970 midnight in milliseconds.
+/// @return Return a time_t number.
+time_t	get_time(void);
+
+void	print_philo(t_philo *philo);
+
+/* init.c */
 
 /// @brief Initialize the structure args.
 /// @param args
@@ -86,22 +103,28 @@ bool	init_args(t_args *args, char **argv);
 /// initialized if everyting is OK.
 t_philo	*init_philo_tab(t_args args);
 
-/// @brief Give the time passed since 01/01/1970 midnight in milliseconds.
-/// @return Return a time_t number.
-time_t	get_time(void);
+/* routine.c */
 
-/// @brief Determine if the philosopher is dead or not.
-/// @param philo
-/// @return Return true if the philosopher is dead and false if is not.
-bool	philo_is_dead(t_philo *philo);
+void	ft_eat(t_philo *philo);
+
+void	ft_sleep(t_philo *philo);
+
+void	ft_think(t_philo *philo);
 
 /// @brief Define the routine fowllowed by each philosophers.
 /// @param arg
 /// @return Always return NULL.
 void	*start_routine(void *arg);
 
-/// @brief Create thread for each philosophers and start the simulation.
+/* routine_utils.c */
+
+/// @brief Determine if the philosopher is dead or not.
 /// @param philo
-void	start_simulation(t_philo **philo_tab);
+/// @return Return true if the philosopher is dead and false if is not.
+bool	philo_is_dead(t_philo *philo);
+
+bool	ft_eat_mutex_lock(t_philo *philo);
+
+void	ft_eat_mutex_unlock(t_philo *philo);
 
 #endif
