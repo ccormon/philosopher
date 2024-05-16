@@ -6,7 +6,7 @@
 /*   By: ccormon <ccormon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:58:32 by ccormon           #+#    #+#             */
-/*   Updated: 2024/05/15 17:21:05 by ccormon          ###   ########.fr       */
+/*   Updated: 2024/05/16 17:04:57 by ccormon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void	start_simulation(t_philo *philo_tab, t_args args)
 	while (i < args.nb_philo)
 		pthread_join(philo_tab[i++].thread_id, NULL);
 	pthread_mutex_destroy(&args.mutex_is_dead);
+	pthread_mutex_destroy(&args.mutex_end_simulation);
+	pthread_mutex_destroy(&args.mutex_print_philo);
 	i = 0;
 	while (i < args.nb_philo)
 	{

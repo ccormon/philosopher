@@ -6,7 +6,7 @@
 /*   By: ccormon <ccormon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 15:55:51 by ccormon           #+#    #+#             */
-/*   Updated: 2024/05/15 17:13:55 by ccormon          ###   ########.fr       */
+/*   Updated: 2024/05/16 17:11:46 by ccormon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,11 @@ bool	init_args(t_args *args, char **argv)
 	else
 		args->nb_meals_max = -1;
 	args->time_start = get_time();
+	args->is_dead = false;
 	pthread_mutex_init(&args->mutex_is_dead, NULL);
+	args->end_simulation = false;
+	pthread_mutex_init(&args->mutex_end_simulation, NULL);
+	pthread_mutex_init(&args->mutex_print_philo, NULL);
 	return (true);
 }
 
@@ -49,18 +53,18 @@ t_philo	*init_philo_tab(t_args args)
 	while (i < args.nb_philo)
 	{
 		philo_tab[i].philo_id = i;
-		philo_tab[i].args = args;
+		philo_tab[i].args = &args;
 		philo_tab[i].nb_meals = 0;
 		philo_tab[i].fork_left.is_available = true;
 		pthread_mutex_init(&philo_tab[i].fork_left.mutex_is_available, NULL);
 		pthread_mutex_init(&philo_tab[i++].fork_left.mutex_fork, NULL);
 	}
-	philo_tab[0].fork_right = &philo_tab[args.nb_philo - 1].fork_left;
-	i = 1;
-	while (i < args.nb_philo)
-	{
+	if (args.nb_philo > 1)
+		philo_tab[0].fork_right = &philo_tab[args.nb_philo - 1].fork_left;
+	else
+		philo_tab[0].fork_right = NULL;
+	i = 0;
+	while (++i < args.nb_philo)
 		philo_tab[i].fork_right = &philo_tab[i - 1].fork_left;
-		i++;
-	}
 	return (philo_tab);
 }

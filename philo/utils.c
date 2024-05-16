@@ -6,7 +6,7 @@
 /*   By: ccormon <ccormon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 15:54:54 by ccormon           #+#    #+#             */
-/*   Updated: 2024/05/15 16:24:31 by ccormon          ###   ########.fr       */
+/*   Updated: 2024/05/16 17:10:24 by ccormon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,27 @@ time_t	get_time(void)
 	return (t.tv_sec * 1000 + t.tv_usec / 1000);
 }
 
-// mutex sur printf pour eviter qu'ils s'ecrivent en meme temps
-// void	print_philo(t_philo *philo)
-// {
-
-// }
+void	print_philo(t_philo *philo, int code)
+{
+	pthread_mutex_lock(&philo->args->mutex_print_philo);
+	if (code == 0)
+		printf("%s%ld %d died\n%s", RED, get_time() - philo->args->time_start,
+			philo->philo_id, RESET_COLOR);
+	else if (code == 1)
+		printf("%s%ld %d has taken a fork\n%s", BLUE,
+			get_time() - philo->args->time_start, philo->philo_id,
+			RESET_COLOR);
+	else if (code == 2)
+		printf("%s%ld %d is eating\n%s", YELLOW,
+			get_time() - philo->args->time_start, philo->philo_id,
+			RESET_COLOR);
+	else if (code == 3)
+		printf("%s%ld %d is sleeping\n%s", GREEN,
+			get_time() - philo->args->time_start, philo->philo_id,
+			RESET_COLOR);
+	else if (code == 4)
+		printf("%s%ld %d is thinking\n%s", MAGENTA,
+			get_time() - philo->args->time_start, philo->philo_id,
+			RESET_COLOR);
+	pthread_mutex_unlock(&philo->args->mutex_print_philo);
+}
