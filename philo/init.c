@@ -24,6 +24,8 @@ bool	init_args(t_args *args, char **argv)
 	if (args->time_to_eat < 0)
 		return (false);
 	args->time_to_sleep = ft_atoi_mod(argv[3]);
+	if (args->time_to_sleep < 0)
+		return (false);
 	if (argv[4])
 	{
 		args->nb_meals_max = ft_atoi_mod(argv[4]);
